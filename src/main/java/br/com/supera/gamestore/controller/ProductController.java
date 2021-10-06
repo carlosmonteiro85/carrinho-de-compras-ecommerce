@@ -50,4 +50,28 @@ public class ProductController {
 		return service.delete(id);
 	}
 
+	// Obtem a lista dos produtos ordenadas por maior preço
+	@GetMapping("/orderByPriceBigger")
+	public List<Product> orderByDescPrice() {
+		return service.findAllByOrderByPriceDesc();
+	}
+
+	// Obtem a lista dos produtos ordenadas por menor preço
+	@GetMapping("/orderByPriceLowest")
+	public List<Product> orderByAscPrice() {
+		return service.findAllByOrderByPriceAsc();
+	}
+
+	// Obtem a lista dos produtos ordenada por maior popularidade
+	@GetMapping("/orderByScoreBigger")
+	public List<Product> orderByDescScore() {
+		return service.findAllByOrderByScoreDesc();
+	}
+
+	// Obtem a lista dos produtos ordenada por menor popularidade
+	@GetMapping("/orderByScoreLowest")
+	public List<Product> orderByAscScore() {
+		return service.findAllByOrderByScoreAsc();
+	}
+
 }

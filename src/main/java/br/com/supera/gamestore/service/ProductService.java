@@ -58,4 +58,24 @@ public class ProductService {
 		return productRepository.findById(id).orElse(null);
 	}
 
+	// Ordenação de produtos pelo maior valor
+	public List<Product> findAllByOrderByPriceDesc() {
+		return productRepository.findAllByOrderByPriceDesc();
+	}
+
+	// Ordenação de produtos pelo menor valor
+	public List<Product> findAllByOrderByPriceAsc() {
+		return productRepository.findAllByOrderByPriceAsc();
+	}
+	
+	// Ordenação de produtos menos populares
+	public List<Product> findAllByOrderByScoreDesc() {
+		return productRepository.findAllByOrderByScoreDesc();
+	}
+	
+	// Ordenação de produtos mais populares
+		public List<Product> findAllByOrderByScoreAsc() {
+			return productRepository.findAllByOrderByScoreAsc();
+		}
+
 }
