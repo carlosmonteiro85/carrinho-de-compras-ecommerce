@@ -28,7 +28,7 @@ public class CheckoutController {
 		this.checkoutService = checkoutService;
 		this.cartService = cartService;
 	}
-
+	
 	@PostMapping
 	public Checkout create(@RequestBody Checkout checkout) {
 		Optional<Cart> cart = cartService.findById(checkout.getCart().getId());
@@ -52,8 +52,8 @@ public class CheckoutController {
 		}).orElse(ResponseEntity.notFound().build());
 	}
 
-	@GetMapping(path = { "pre-checkout/{id}" })
-	public ResponseEntity<Checkout> findById(@PathVariable long id) {
+	@GetMapping("consult/{id}")
+	public ResponseEntity<Checkout> consultCheckout(@PathVariable long id) {
 		return cartService.findById(id).map(cart -> {
 			Checkout checkout = new Checkout();
 			checkout.setCart(cart);
