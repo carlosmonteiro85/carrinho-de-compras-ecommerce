@@ -39,4 +39,8 @@ public class ProductService {
 		return productRepository.findAll(sort);
 	}
 
+	public void deleteAll() {
+		productRepository.deleteAll();
+	}
+
 }
