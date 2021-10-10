@@ -1,8 +1,10 @@
 package br.com.supera.gamestore.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,66 +13,80 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.supera.gamestore.model.Product;
 import br.com.supera.gamestore.service.ProductService;
 
+
+
 @RestController
-@RequestMapping("/products")
+@RequestMapping("products")
 public class ProductController {
 
-	@Autowired
-	private ProductService service;
+	private ProductService productService;
 
-	@GetMapping
-	public List<Product> listAll() {
-		return service.findAll();
+	public ProductController(ProductService productService) {
+		this.productService = productService;
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Product>  findById(@PathVariable Long id){
-		return service.loadById(id);
+	@PostMapping
+	public Product create(@RequestBody Product product) {
+		return productService.save(product);
+	}
+
+	@PutMapping("{id}")
+	public ResponseEntity<Product> update(@PathVariable("id") long id, @RequestBody Product product) {
+		return productService.findById(id).map(record -> {
+			record.setName(product.getName());
+			record.setImage(product.getImage());
+			record.setPrice(product.getPrice());
+			record.setScore(product.getScore());
+			Product updated = productService.save(record);
+			return ResponseEntity.ok().body(updated);
+		}).orElse(ResponseEntity.notFound().build());
+	}
+
+	@DeleteMapping("{id}")
+	public ResponseEntity<?> delete(@PathVariable("id") long id) {
+		return productService.findById(id).map(record -> {
+			productService.deleteById(id);
+			return ResponseEntity.ok().build();
+		}).orElse(ResponseEntity.notFound().build());
 	}
 	
-	@PostMapping
-	public Product createFornecedor(@RequestBody Product product) {
-		return service.save(product);
+	@GetMapping("{id}")
+	public ResponseEntity<Product> findById(@PathVariable Long id) {
+		return productService.findById(id).map(p -> ResponseEntity.ok().body(p))
+				.orElse(ResponseEntity.notFound().build());
 	}
+	
+	@GetMapping
+	public List<Product> findAll(@RequestParam(defaultValue = "id,asc") String[] sort) {
 
+		List<Order> orders = new ArrayList<>();
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Product> updateById(@PathVariable Long id, @RequestBody Product product){
-		return service.updateById(id, product);
+		if (sort[0].contains(",")) {
+			// irá ordenar mais que dois campos
+			// sortOrder="field, direction"
+			for (String sortOrder : sort) {
+				String[] _sort = sortOrder.split(",");
+				orders.add(new Order(getSortDirection(_sort[1]), _sort[0]));
+			}
+		} else {
+			// sort=[field, direction]
+			orders.add(new Order(getSortDirection(sort[1]), sort[0]));
+		}
+		
+		return productService.findAll(Sort.by(orders));
 	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?>deleteById(@PathVariable Long id){
-		return service.delete(id);
-	}
-
-	// Obtem a lista dos produtos ordenadas por maior preço
-	@GetMapping("/orderByPriceBigger")
-	public List<Product> orderByDescPrice() {
-		return service.findAllByOrderByPriceDesc();
-	}
-
-	// Obtem a lista dos produtos ordenadas por menor preço
-	@GetMapping("/orderByPriceLowest")
-	public List<Product> orderByAscPrice() {
-		return service.findAllByOrderByPriceAsc();
-	}
-
-	// Obtem a lista dos produtos ordenada por maior popularidade
-	@GetMapping("/orderByScoreBigger")
-	public List<Product> orderByDescScore() {
-		return service.findAllByOrderByScoreDesc();
-	}
-
-	// Obtem a lista dos produtos ordenada por menor popularidade
-	@GetMapping("/orderByScoreLowest")
-	public List<Product> orderByAscScore() {
-		return service.findAllByOrderByScoreAsc();
+	
+	private Sort.Direction getSortDirection(String direction) {
+		if (direction.equals("desc")) {
+			return Sort.Direction.DESC;
+		}
+		return Sort.Direction.ASC;
 	}
 
 }

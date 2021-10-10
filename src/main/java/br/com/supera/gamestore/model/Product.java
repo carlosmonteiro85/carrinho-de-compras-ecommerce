@@ -2,35 +2,21 @@ package br.com.supera.gamestore.model;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "products")
 public class Product {
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private Long id;
-	
-	@Column(name = "name", nullable = false)
 	private String name;
-	
-	@Column(name = "price", nullable = false)
 	private BigDecimal price;
-	
-	@Column(name = "score")
-	private short score;
-	
-	@Column(name = "image")
+	private Integer score;
 	private String image;
 
-	
-	//Gets and Sets
 	public Long getId() {
 		return id;
 	}
@@ -55,11 +41,11 @@ public class Product {
 		this.price = price;
 	}
 
-	public short getScore() {
+	public Integer getScore() {
 		return score;
 	}
 
-	public void setScore(short score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 
