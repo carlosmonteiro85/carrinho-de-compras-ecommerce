@@ -86,15 +86,13 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 	@Test
 	public void orderByName() {
 		
-		productService.deleteAll();
-
 		// Cenario
 		Product product1 = getProductForTest();
-		product1.setName("Produto A");
+		product1.setName("AAA Product");
 		Product product2 = getProductForTest();
-		product2.setName("Produto B");
+		product2.setName("BBB Product");
 		Product product3 = getProductForTest();
-		product3.setName("Produto C");
+		product3.setName("ZZZ Product");
 		
 		productService.save(product1);
 		productService.save(product2);
@@ -106,7 +104,7 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 		List<Product> produtos = productService.findAll(Sort.by(orders));
 
 		// Validação
-		assertEquals("Produto C", produtos.get(0).getName());
+		assertEquals("ZZZ Product", produtos.get(0).getName());
 
 	}
 
