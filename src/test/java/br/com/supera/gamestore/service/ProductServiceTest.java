@@ -20,39 +20,39 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 
 	@Autowired
 	private ProductService productService;
-	
+
 	@Test
 	public void insertProduct() {
 		// Cenário
 		Product product = getProductForTest();
-		
+
 		// Ação
 		productService.save(product);
-		
-		//Verificação
+
+		// Verificação
 		assertNotNull(product.getId());
 	}
-	
+
 	@Test
 	public void updateProduct() {
 		// Cenário
 		Product product = getProductForTest();
 		productService.save(product);
-		
+
 		product.setName(faker.commerce().productName() + " [ATUALIZADO]");
-		
+
 		// Ação
 		productService.save(product);
-		
-		//Verificação
+
+		// Verificação
 		Product productPersisted = productService.findById(product.getId()).orElse(new Product());
 		assertNotNull(productPersisted);
 		assertTrue(productPersisted.getName().endsWith("[ATUALIZADO]"));
 	}
-	
+
 	@Test
 	public void listAllProducts() {
-		
+
 		// Cenário
 		Product product1 = getProductForTest();
 		Product product2 = getProductForTest();
@@ -60,32 +60,32 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 		productService.save(product1);
 		productService.save(product2);
 		productService.save(product3);
-		
+
 		// Ação
 		List<Product> allProducts = productService.findAll();
-		
-		//Verificação
+
+		// Verificação
 		assertTrue(allProducts.size() >= 3);
 	}
-	
+
 	@Test
 	public void findProductById() {
-		
+
 		// Cenário
 		Product product = getProductForTest();
 		productService.save(product);
-		
+
 		// Ação
 		Product productPersisted = productService.findById(product.getId()).orElse(null);
-		
-		//Verificação
+
+		// Verificação
 		assertNotNull(productPersisted);
 		assertEquals(product.getId(), productPersisted.getId());
 	}
-	
+
 	@Test
 	public void orderByName() {
-		
+
 		// Cenario
 		Product product1 = getProductForTest();
 		product1.setName("AAA Product");
@@ -93,11 +93,11 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 		product2.setName("BBB Product");
 		Product product3 = getProductForTest();
 		product3.setName("ZZZ Product");
-		
+
 		productService.save(product1);
 		productService.save(product2);
 		productService.save(product3);
-		
+
 		// Teste
 		List<Order> orders = new ArrayList<>();
 		orders.add(new Order(Sort.Direction.DESC, "name"));
@@ -108,6 +108,7 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 
 	}
 
+	@Test
 	public void orderByPrice() {
 
 		productService.deleteAll();
@@ -118,24 +119,24 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 		Product product2 = getProductForTest();
 		product2.setPrice(new BigDecimal(5));
 		Product product3 = getProductForTest();
-		product3.setPrice(new BigDecimal(10));
-		
+		product3.setPrice(new BigDecimal(Integer.MAX_VALUE));
+
 		productService.save(product1);
 		productService.save(product2);
 		productService.save(product3);
-		
+
 		// Teste
 		List<Order> orders = new ArrayList<>();
 		orders.add(new Order(Sort.Direction.DESC, "price"));
 		List<Product> produtos = productService.findAll(Sort.by(orders));
 
 		// Validação
-		assertEquals(new BigDecimal(10), produtos.get(0).getPrice());
+		assertEquals(product3.getPrice().intValue(), produtos.get(0).getPrice().intValue());
 
 	}
 
+	@Test
 	public void orderByScore() {
-
 
 		// Cenario
 		Product product1 = getProductForTest();
@@ -143,19 +144,19 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 		Product product2 = getProductForTest();
 		product2.setScore(5);
 		Product product3 = getProductForTest();
-		product3.setScore(10);
-		
+		product3.setScore(Integer.MAX_VALUE);
+
 		productService.save(product1);
 		productService.save(product2);
 		productService.save(product3);
-		
+
 		// Teste
 		List<Order> orders = new ArrayList<>();
-		orders.add(new Order(Sort.Direction.DESC, "price"));
+		orders.add(new Order(Sort.Direction.DESC, "score"));
 		List<Product> produtos = productService.findAll(Sort.by(orders));
 
 		// Validação
-		assertEquals(10, produtos.get(0).getScore());
+		assertEquals(Integer.MAX_VALUE, produtos.get(0).getScore());
 
 	}
 

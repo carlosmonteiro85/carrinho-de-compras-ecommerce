@@ -25,7 +25,7 @@ public class CheckoutServiceTest extends GameStoreApplicationTests {
 	@Autowired
 	private ProductService productService;
 	
-//	@Test
+	@Test
 	public void insertCheckout() {
 		
 		// Cenário
