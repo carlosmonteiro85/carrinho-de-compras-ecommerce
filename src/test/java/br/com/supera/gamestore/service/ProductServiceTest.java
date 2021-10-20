@@ -111,8 +111,6 @@ public class ProductServiceTest extends GameStoreApplicationTests {
 	@Test
 	public void orderByPrice() {
 
-		productService.deleteAll();
-
 		// Cenario
 		Product product1 = getProductForTest();
 		product1.setPrice(new BigDecimal(1));
