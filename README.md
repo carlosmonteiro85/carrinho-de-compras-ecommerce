@@ -161,5 +161,5 @@ mais alguns..
 * Método DELETE
 * End-point: http://localhost:8080/checkout/{id_checkout}
 
-***** As informações Subtotal, Total e Frete, são dinâmicas, iram mudar de acordo com os itens do carrinho,
+**** As informações Subtotal, Total e Frete, são dinâmicas, iram mudar de acordo com os itens do carrinho,
 cada item adicionado no carrinho é acrescido 10,00 no frete, se o valor total chegar a 250,00, o frete será Gratuito de acordo com a regra de negócio.
